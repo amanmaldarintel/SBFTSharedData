@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShmooClassifier Summary</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, 'Segoe UI', sans-serif; font-size: 14px; background: #f8fafc; color: #1f2937; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); color: #2c3e50; padding: 25px; text-align: center; border-radius: 12px 12px 0 0; }
+        .header h1 { font-size: 1.8em; margin-bottom: 4px; }
+        .header .subtitle { font-size: 0.95em; opacity: 0.7; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 20px; background: #fff; }
+        .card { background: #f8fafc; padding: 16px; border-radius: 10px; text-align: center; border: 1px solid #e5e7eb; }
+        .card .num { font-size: 2em; font-weight: 800; color: #3949ab; }
+        .card .lbl { font-size: 0.8em; color: #6c757d; text-transform: uppercase; margin-top: 4px; }
+        .card.pass .num { color: #2e7d32; }
+        .card.fail .num { color: #c62828; }
+        section { background: #fff; padding: 20px; margin-bottom: 2px; }
+        section h2 { font-size: 1.2em; color: #3949ab; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #e8eaf6; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+        th { background: #e8eaf6; color: #2c3e50; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 0.85em; text-transform: uppercase; border: 1px solid #c5cae9; }
+        td { padding: 6px 10px; border: 1px solid #e5e7eb; }
+        tbody tr:hover { background: #f5f5ff; }
+        .test-cell { font-family: Consolas, monospace; font-size: 0.85em; max-width: 500px; word-break: break-all; }
+        .bar-bg { background: #f0f0f0; border-radius: 4px; height: 16px; width: 100%; min-width: 100px; }
+        .bar { height: 100%; border-radius: 4px; }
+        .bar-pass { background: #66bb6a; }
+        .bar-fail { background: #ef5350; }
+        .bar-other { background: #ffc107; }
+        .footer { background: #fff; padding: 15px; text-align: center; color: #6c757d; border-top: 1px solid #e5e7eb; border-radius: 0 0 12px 12px; font-size: 0.9em; }
+        @media print { body { padding: 0; } .container { max-width: 100%; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>ShmooClassifier Summary</h1>
+        <p class="subtitle">Dataset Summary &amp; Yield Analysis</p>
+    </div>
+
+    <div class="cards">
+        <div class="card"><div class="num">44</div><div class="lbl">Total Shmoos</div></div>
+        <div class="card"><div class="num">3</div><div class="lbl">Units</div></div>
+        <div class="card"><div class="num">2</div><div class="lbl">Lots</div></div>
+        <div class="card"><div class="num">42</div><div class="lbl">Unique Tests</div></div>
+        <div class="card"><div class="num">1</div><div class="lbl">Sockets</div></div>
+        <div class="card pass"><div class="num">31.8%</div><div class="lbl">Pass Rate</div></div>
+        <div class="card fail"><div class="num">68.2%</div><div class="lbl">Fail Rate</div></div>
+    </div>
+
+    <section>
+        <h2>Pass / Fail by Socket</h2>
+        <table>
+            <thead><tr><th>Socket</th><th>Total</th><th>Pass</th><th>Fail</th><th>Other</th><th>Pass Rate</th><th>Fail Rate</th></tr></thead>
+            <tbody><tr><td>CLASSHOT</td><td>44</td><td>14</td><td>30</td><td>0</td><td>31.8%</td><td>68.2%</td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Pass / Fail by Shmoo Type</h2>
+        <table>
+            <thead><tr><th>Shmoo Type</th><th>Total</th><th>Pass</th><th>Fail</th><th>Pass Rate</th><th>Fail Rate</th></tr></thead>
+            <tbody><tr><td>cross_ratio</td><td>42</td><td>12</td><td>30</td><td>28.6%</td><td>71.4%</td></tr>
+<tr><td>timing</td><td>2</td><td>2</td><td>0</td><td>100.0%</td><td>0.0%</td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Top Content Types by Shmoo Count</h2>
+        <table>
+            <thead><tr><th>Content Type</th><th>Total</th><th>Pass</th><th>Fail</th><th>Defect</th><th>Pass Rate</th><th>Fail Rate</th><th>Distribution</th></tr></thead>
+            <tbody><tr><td><b>FUN_CORE_CBB</b></td><td>36</td><td>12</td><td>24</td><td>24</td><td>33.3%</td><td>66.7%</td><td><div class="bar-bg"><div class="bar bar-other" style="width:81%"></div></div></td></tr>
+<tr><td><b>EIO_UCIE</b></td><td>6</td><td>0</td><td>6</td><td>6</td><td>0.0%</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-other" style="width:13%"></div></div></td></tr>
+<tr><td><b>HTD_RESET_MCPSPLIT</b></td><td>2</td><td>2</td><td>0</td><td>0</td><td>100.0%</td><td>0.0%</td><td><div class="bar-bg"><div class="bar bar-other" style="width:4%"></div></div></td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Classification Distribution</h2>
+        <table>
+            <thead><tr><th>Classification</th><th>Count</th><th>%</th><th>Distribution</th></tr></thead>
+            <tbody><tr><td>DEFECT (SPECKLE)</td><td>24</td><td>54.5%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:54%"></div></div></td></tr>
+<tr><td>PASS</td><td>14</td><td>31.8%</td><td><div class="bar-bg"><div class="bar bar-pass" style="width:31%"></div></div></td></tr>
+<tr><td>DEFECT (DEAD_SHMOO)</td><td>4</td><td>9.1%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:9%"></div></div></td></tr>
+<tr><td>DEFECT (WALL)</td><td>2</td><td>4.5%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:4%"></div></div></td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Pass / Fail by Lot</h2>
+        <table>
+            <thead><tr><th>Lot</th><th>Total</th><th>Pass</th><th>Fail</th><th>Pass Rate</th><th>Fail Rate</th></tr></thead>
+            <tbody><tr><td>J640064MV</td><td>19</td><td>13</td><td>6</td><td>68.4%</td><td>31.6%</td></tr>
+<tr><td>J640140MV</td><td>25</td><td>1</td><td>24</td><td>4.0%</td><td>96.0%</td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Pass / Fail by Unit</h2>
+        <table>
+            <thead><tr><th>Visual ID</th><th>Total</th><th>Pass</th><th>Fail</th><th>Pass Rate</th><th>Fail Rate</th></tr></thead>
+            <tbody><tr><td>D6052PY100173</td><td>19</td><td>13</td><td>6</td><td>68.4%</td><td>31.6%</td></tr>
+<tr><td>D63X2G3600059</td><td>22</td><td>1</td><td>21</td><td>4.5%</td><td>95.5%</td></tr>
+<tr><td>D63X2G3600060</td><td>3</td><td>0</td><td>3</td><td>0.0%</td><td>100.0%</td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Top Failing Tests</h2>
+        <table>
+            <thead><tr><th>Test</th><th>Fails</th><th>Total</th><th>Fail Rate</th><th>Distribution</th></tr></thead>
+            <tbody><tr><td class="test-cell">DV_X_CTV_E_BGNPKG_X_X_X_X_SHMOO_CTV_RINGCFCMEM</td><td>2</td><td>2</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_RINGCFCMEM</td><td>2</td><td>2</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_C2IAUCIEA</td><td>2</td><td>2</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+<tr><td class="test-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38</td><td>1</td><td>1</td><td>100.0%</td><td><div class="bar-bg"><div class="bar bar-fail" style="width:100%"></div></div></td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Socket &times; Classification Heatmap</h2>
+        <table>
+            <thead><tr><th>Socket</th><th>DEFECT (DEAD_SHMOO)</th><th>DEFECT (SPECKLE)</th><th>DEFECT (WALL)</th><th>PASS</th></tr></thead>
+            <tbody><tr><td><b>CLASSHOT</b></td><td style="background:#ffcdd2">4</td><td style="background:#ffcdd2">24</td><td style="background:#ffcdd2">2</td><td style="background:#c8e6c9">14</td></tr>
+</tbody>
+        </table>
+    </section>
+
+    <div class="footer">
+        <p><strong>ShmooClassifier Summary</strong></p>
+        <p>Generated: 2026-10-05 10:55:04</p>
+    </div>
+</div>
+</body>
+</html>

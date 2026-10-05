@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chainwalkF1F4F7Data Only x1 units - J640064MV/65MV J640140MV</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, 'Segoe UI', sans-serif;
+            font-size: 14px;
+            background: #f8fafc;
+            color: #1f2937;
+            padding: 0; margin: 0; overflow-x: hidden;
+        }
+        .container {
+            max-width: 100vw; max-height: 100vh; margin: 0; background: white;
+            border-radius: 0; box-shadow: none; overflow: auto;
+            display: flex; flex-direction: column;
+        }
+        .header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1976D2 100%);
+            color: #FFFFFF; padding: 12px 15px; text-align: center;
+        }
+        .header h1 { font-size: 1.5em; margin: 0; color: #FFFFFF; }
+        .controls {
+            background: #EBF3FA; padding: 8px 12px; border-bottom: 1px solid #CBD5E1;
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        }
+        .dropdown-filter { position: relative; display: inline-block; }
+        .dropdown-button { background: #FFFFFF; border: 1px solid #CBD5E1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9em; font-weight: 600; color: #334155; min-width: 130px; text-align: left; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+        .dropdown-button:hover { border-color: #1976D2; box-shadow: 0 1px 3px rgba(25,118,210,0.2); }
+        .dropdown-button:active { background: #EBF3FA; border-color: #1E3A8A; }
+        .dropdown-content { display: none; position: absolute; background-color: white; min-width: 200px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); z-index: 1000; border-radius: 6px; padding: 10px; max-height: 300px; overflow-y: auto; border: 1px solid #CBD5E1; }
+        .dropdown-content.show { display: block; }
+        .dropdown-item { padding: 5px 8px; display: flex; align-items: center; gap: 8px; }
+        .dropdown-item:hover { background-color: #f0f8ff; }
+        .dropdown-item input[type="checkbox"] { width: 15px; height: 15px; }
+        .dropdown-item label { cursor: pointer; flex: 1; font-size: 0.9em; }
+        .search-box { flex: 1; min-width: 120px; max-width: 160px; }
+        .search-box-wide { max-width: 320px; }
+        .search-box input { width: 100%; padding: 6px 10px; border: 1px solid #d8e8f8; border-radius: 6px; font-size: 0.85em; }
+        .search-box input:focus { outline: none; border-color: #80cbc4; }
+        .search-error-indicator { color: #c62828; font-size: 0.8em; font-weight: 600; }
+        .row-count-indicator { background: #DBEAFE; color: #1E40AF; font-weight: 600; font-size: 0.85em; padding: 6px 12px; border-radius: 6px; border: 1px solid #93C5FD; white-space: nowrap; }
+        .summary-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px 16px; margin: 10px 12px; display: flex; align-items: flex-start; gap: 15px; }
+        .summary-left { flex: 0 0 auto; }
+        .classification-summary-title { font-size: 1em; margin: 0 0 4px 0; color: #2c3e50; white-space: nowrap; }
+        .summary-stats { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .stat-card { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 6px 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+        .stat-number { font-size: 1.1em; font-weight: bold; color: #1D4ED8; margin-bottom: 2px; }
+        .stat-label { color: #64748B; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 600; }
+        .report-details-inline { font-size: 1.15em; color: #475569; padding: 2px 0; flex: 1 1 auto; min-width: 0; align-self: center; }
+        .report-detail-line { white-space: nowrap; overflow-x: auto; line-height: 1.4; }
+        .report-detail-label { font-weight: 700; color: #334155; }
+        .report-detail-value { font-family: 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace; color: #475569; }
+        .report-detail-sep { color: #94A3B8; font-weight: 600; }
+        .content { padding: 0 20px 20px 20px; }
+        .table-scroll-container { max-height: 80vh; overflow: auto; border: 1px solid #e5e7eb; border-radius: 6px; }
+        .data-table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
+        .data-table thead th {
+            position: sticky; top: 0; z-index: 20;
+            background: #E0E7FF; color: #1E293B;
+            padding: 8px 8px; text-align: left; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.95rem;
+            border: 1px solid #94A3B8; white-space: nowrap;
+        }
+        .data-table td { padding: 6px 8px; border: 1px solid #757575; vertical-align: top; white-space: nowrap; }
+        .data-table td.socket-col { white-space: normal; min-width: 160px; text-align: center; }
+        .data-table tbody tr:hover { background-color: #f0faf8; }
+        .data-table tbody tr.row-hidden { display: none; }
+        .row-number { font-weight: bold; color: #6c757d; text-align: center; background-color: #f8f9fa; }
+        .kw-timing { color: #ffffff; background-color: #1565c0; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+        .kw-xratio { color: #ffffff; background-color: #c62828; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
+        .data-table td.test-name-col { font-weight: 500; color: #2c3e50; max-width: 350px; white-space: normal; word-break: break-word; }
+        .data-table th.row-number, .data-table td.row-number,
+        .data-table th.col-lot, .data-table td.col-lot,
+        .data-table th.col-visual-id, .data-table td.col-visual-id,
+        .data-table th.col-substructure, .data-table td.col-substructure,
+        .data-table th.col-order-num, .data-table td.col-order-num { width: 1%; white-space: nowrap; }
+        .data-table th.col-hidden, .data-table td.col-hidden { display: none; }
+        .classification-badge {
+            font-family: 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace;
+            padding: 3px 8px; height: 22px;
+            font-size: 0.75em; font-weight: 700; border-radius: 4px;
+            text-align: center; letter-spacing: 0.3px; display: inline-flex; align-items: center;
+            border: 1px solid transparent; line-height: 1.2;
+        }
+        .class-pass { background: #c8e6c9; color: #2e7d32; border: 1px solid #81c784; }
+        .class-defect { background: #ffcdd2; color: #c62828; border: 1px solid #ef9a9a; }
+        .class-clamped { background: #fff9c4; color: #f57f17; border: 1px solid #fff176; }
+        .footer { background: #f0faf8; padding: 4px 10px; text-align: center; color: #6c757d; border-top: 1px solid #d8e8f8; font-size: 0.8em; }
+        .footer p { margin: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>chainwalkF1F4F7Data Only x1 units - J640064MV/65MV J640140MV</h1>
+        </div>
+        <div class="controls">
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('lotDropdown')">LOT &#x25BC;</button>
+                <div id="lotDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><a href="#" onclick="selectAllDropdown('lotDropdown'); return false;">Select All</a> | <a href="#" onclick="unselectAllDropdown('lotDropdown'); return false;">Unselect All</a></div>
+                    <div class="dropdown-item"><input type="checkbox" id="lot_J640064MV" value="J640064MV" onchange="updateTable()" checked><label for="lot_J640064MV">J640064MV</label></div><div class="dropdown-item"><input type="checkbox" id="lot_J640140MV" value="J640140MV" onchange="updateTable()" checked><label for="lot_J640140MV">J640140MV</label></div>
+                </div>
+            </div>
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('operationDropdown')">OPERATION &#x25BC;</button>
+                <div id="operationDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><a href="#" onclick="selectAllDropdown('operationDropdown'); return false;">Select All</a> | <a href="#" onclick="unselectAllDropdown('operationDropdown'); return false;">Unselect All</a></div>
+                    <div class="dropdown-item"><input type="checkbox" id="op_6248" value="6248" onchange="updateTable()" checked><label for="op_6248">6248</label></div>
+                </div>
+            </div>
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('socketDropdown')">SOCKETS &#x25BC;</button>
+                <div id="socketDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><a href="#" onclick="selectAllDropdown('socketDropdown'); return false;">Select All</a> | <a href="#" onclick="unselectAllDropdown('socketDropdown'); return false;">Unselect All</a></div>
+                    <div class="dropdown-item"><input type="checkbox" id="sock_CLASSHOT" value="CLASSHOT" onchange="updateTable()" checked><label for="sock_CLASSHOT">CLASSHOT</label></div>
+                </div>
+            </div>
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('visualIdDropdown')">VISUAL_ID &#x25BC;</button>
+                <div id="visualIdDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><a href="#" onclick="selectAllDropdown('visualIdDropdown'); return false;">Select All</a> | <a href="#" onclick="unselectAllDropdown('visualIdDropdown'); return false;">Unselect All</a></div>
+                    <div class="dropdown-item"><input type="checkbox" id="vid_D6052PY100173" value="D6052PY100173" onchange="updateTable()" checked><label for="vid_D6052PY100173">D6052PY100173</label></div><div class="dropdown-item"><input type="checkbox" id="vid_D63X2G3600059" value="D63X2G3600059" onchange="updateTable()" checked><label for="vid_D63X2G3600059">D63X2G3600059</label></div><div class="dropdown-item"><input type="checkbox" id="vid_D63X2G3600060" value="D63X2G3600060" onchange="updateTable()" checked><label for="vid_D63X2G3600060">D63X2G3600060</label></div>
+                </div>
+            </div>
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('modulesDropdown')">MODULES &#x25BC;</button>
+                <div id="modulesDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><a href="#" onclick="selectAllDropdown('modulesDropdown'); return false;">Select All</a> | <a href="#" onclick="unselectAllDropdown('modulesDropdown'); return false;">Unselect All</a></div>
+                    <div class="dropdown-item"><input type="checkbox" id="cat_EIO_UCIE" value="EIO_UCIE" onchange="updateTable()" checked><label for="cat_EIO_UCIE">EIO_UCIE (6)</label></div><div class="dropdown-item"><input type="checkbox" id="cat_FUN_CORE_CBB" value="FUN_CORE_CBB" onchange="updateTable()" checked><label for="cat_FUN_CORE_CBB">FUN_CORE_CBB (36)</label></div><div class="dropdown-item"><input type="checkbox" id="cat_HTD_RESET_MCPSPLIT" value="HTD_RESET_MCPSPLIT" onchange="updateTable()" checked><label for="cat_HTD_RESET_MCPSPLIT">HTD_RESET_MCPSPLIT (2)</label></div>
+                </div>
+            </div>
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('classificationDropdown')">CLASSIFICATION &#x25BC;</button>
+                <div id="classificationDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><a href="#" onclick="selectAllDropdown('classificationDropdown'); return false;">Select All</a> | <a href="#" onclick="unselectAllDropdown('classificationDropdown'); return false;">Unselect All</a></div>
+                    <div class="dropdown-item"><input type="checkbox" id="cls_DEFECT_DEAD_SHMOO" value="DEFECT (DEAD_SHMOO)" onchange="updateTable()" checked><label for="cls_DEFECT_DEAD_SHMOO">DEFECT (DEAD_SHMOO)</label></div><div class="dropdown-item"><input type="checkbox" id="cls_DEFECT_SPECKLE" value="DEFECT (SPECKLE)" onchange="updateTable()" checked><label for="cls_DEFECT_SPECKLE">DEFECT (SPECKLE)</label></div><div class="dropdown-item"><input type="checkbox" id="cls_DEFECT_WALL" value="DEFECT (WALL)" onchange="updateTable()" checked><label for="cls_DEFECT_WALL">DEFECT (WALL)</label></div><div class="dropdown-item"><input type="checkbox" id="cls_PASS" value="PASS" onchange="updateTable()" checked><label for="cls_PASS">PASS</label></div>
+                </div>
+            </div>
+            <div class="dropdown-filter">
+                <button class="dropdown-button" onclick="toggleDropdown('columnsDropdown')">COLUMNS &#x25BC;</button>
+                <div id="columnsDropdown" class="dropdown-content">
+                    <div class="dropdown-item"><input type="checkbox" id="colToggle_lot" value="col-lot" onchange="toggleColumnVisibility(this)" checked><label for="colToggle_lot">LOT</label></div>
+                    <div class="dropdown-item"><input type="checkbox" id="colToggle_visual-id" value="col-visual-id" onchange="toggleColumnVisibility(this)"><label for="colToggle_visual-id">Visual ID</label></div>
+                    <div class="dropdown-item"><input type="checkbox" id="colToggle_substructure" value="col-substructure" onchange="toggleColumnVisibility(this)"><label for="colToggle_substructure">Substructure ID</label></div>
+                    <div class="dropdown-item"><input type="checkbox" id="colToggle_order-num" value="col-order-num" onchange="toggleColumnVisibility(this)"><label for="colToggle_order-num">Test Result Order Num</label></div>
+                    <div class="dropdown-item"><input type="checkbox" id="colToggle_test-name" value="col-test-name" onchange="toggleColumnVisibility(this)" checked><label for="colToggle_test-name">Test Name</label></div>
+                </div>
+            </div>
+            <div class="search-box search-box-wide"><input type="text" id="searchInput" onkeyup="updateTable()" placeholder="Search: DRGMLC AND (M1 OR M2)"></div>
+            <span id="searchErrorIndicator" class="search-error-indicator"></span>
+            <span id="rowCountIndicator" class="row-count-indicator">0 of 0 rows</span>
+        </div>
+        <div class="summary-box">
+            <div class="summary-left">
+                <h2 class="classification-summary-title">Classification Summary</h2>
+                <div class="summary-stats">
+                    <div class="stat-card"><div class="stat-number">44</div><div class="stat-label">Total Tests</div></div>
+                    <div class="stat-card"><div class="stat-number">6</div><div class="stat-label">EIO_UCIE</div></div>
+                <div class="stat-card"><div class="stat-number">36</div><div class="stat-label">FUN_CORE_CBB</div></div>
+                <div class="stat-card"><div class="stat-number">2</div><div class="stat-label">HTD_RESET_MCPSPLIT</div></div>
+                
+                    <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Unique Units</div></div>
+                </div>
+            </div>
+            <div class="report-details-inline">
+                <div class="report-detail-line"><span class="report-detail-label">Input Path:</span> <span class="report-detail-value">C:\Temp\qbot_agent\ShmooClassifier\ww41_2_chainwalkF1F4F7Data\mapiShmooDataRaw.csv</span> <span class="report-detail-sep">|</span> <span class="report-detail-label">Output Path:</span> <span class="report-detail-value">C:\Temp\qbot_agent\ShmooClassifier\ww41_2_chainwalkF1F4F7Data\ShmooClassifier.html</span></div><div class="report-detail-line"><span class="report-detail-label">Message:</span> <span class="report-detail-value"> chainwalkF1F4F7Data Only x1 units - J640064MV/65MV J640140MV</span></div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="table-scroll-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="row-number">#</th><th class="col-lot">LOT</th><th class="col-visual-id col-hidden">VISUAL_ID</th><th class="col-substructure col-hidden">SUBSTRUCTURE_ID</th><th class="col-order-num col-hidden">TEST_RESULT_ORDER_NUM</th><th class="col-test-name test-name-header">TEST_NAME</th>
+                        <th class="socket-col socket-col-CLASSHOT classification-header" data-socket="CLASSHOT" data-coltype="classification">SHMOO_CLASSHOT</th>
+                    </tr>
+                </thead>
+                <tbody>
+<tr data-category="EIO_UCIE" data-operation="6248" data-visual-id="D63X2G3600060" data-lot="J640140MV" data-classification="DEFECT (DEAD_SHMOO)" data-row-text="J640140MV D63X2G3600060 U10.U1 23668 DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_RINGCFCMEM DEFECT (DEAD_SHMOO)">
+                <td class="row-number">1</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600060</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">23668</td>
+                <td class="col-test-name test-name-col test-name-cell">DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_RINGCFCMEM</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (DEAD_SHMOO)</span></td>
+            </tr>
+<tr data-category="EIO_UCIE" data-operation="6248" data-visual-id="D63X2G3600060" data-lot="J640140MV" data-classification="DEFECT (DEAD_SHMOO)" data-row-text="J640140MV D63X2G3600060 U10.U1 23676 DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_C2IAUCIEA DEFECT (DEAD_SHMOO)">
+                <td class="row-number">2</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600060</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">23676</td>
+                <td class="col-test-name test-name-col test-name-cell">DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_C2IAUCIEA</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (DEAD_SHMOO)</span></td>
+            </tr>
+<tr data-category="EIO_UCIE" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (DEAD_SHMOO)" data-row-text="J640140MV D63X2G3600059 U10.U1 23705 DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_RINGCFCMEM DEFECT (DEAD_SHMOO)">
+                <td class="row-number">3</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">23705</td>
+                <td class="col-test-name test-name-col test-name-cell">DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_RINGCFCMEM</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (DEAD_SHMOO)</span></td>
+            </tr>
+<tr data-category="EIO_UCIE" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (DEAD_SHMOO)" data-row-text="J640140MV D63X2G3600059 U10.U1 23717 DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_C2IAUCIEA DEFECT (DEAD_SHMOO)">
+                <td class="row-number">4</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">23717</td>
+                <td class="col-test-name test-name-col test-name-cell">DV_X_X_E_BGNPKG_TAP_X_X_X_SHMOO_TAP2CRI_C2IAUCIEA</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (DEAD_SHMOO)</span></td>
+            </tr>
+<tr data-category="EIO_UCIE" data-operation="6248" data-visual-id="D63X2G3600060" data-lot="J640140MV" data-classification="DEFECT (WALL)" data-row-text="J640140MV D63X2G3600060 U10.U1 23738 DV_X_CTV_E_BGNPKG_X_X_X_X_SHMOO_CTV_RINGCFCMEM DEFECT (WALL)">
+                <td class="row-number">5</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600060</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">23738</td>
+                <td class="col-test-name test-name-col test-name-cell">DV_X_CTV_E_BGNPKG_X_X_X_X_SHMOO_CTV_RINGCFCMEM</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (WALL)</span></td>
+            </tr>
+<tr data-category="EIO_UCIE" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (WALL)" data-row-text="J640140MV D63X2G3600059 U10.U1 24154 DV_X_CTV_E_BGNPKG_X_X_X_X_SHMOO_CTV_RINGCFCMEM DEFECT (WALL)">
+                <td class="row-number">6</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">24154</td>
+                <td class="col-test-name test-name-col test-name-cell">DV_X_CTV_E_BGNPKG_X_X_X_X_SHMOO_CTV_RINGCFCMEM</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (WALL)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640064MV D6052PY100173 U10.U1 37576 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF1_HPTP_IA_X_F1_SIGON_FG_RVEDC_CHAIN117 DEFECT (SPECKLE)">
+                <td class="row-number">7</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37576</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF1_HPTP_IA_X_F1_SIGON_FG_RVEDC_CHAIN117</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 37618 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF1_HPTP_IA_X_F1_SIGON_FG_RVEDC_CHAIN101 PASS">
+                <td class="row-number">8</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37618</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF1_HPTP_IA_X_F1_SIGON_FG_RVEDC_CHAIN101</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640064MV D6052PY100173 U10.U1 37655 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF1_HPTP_IA_X_F1_SIGON_FG_RVEDC_CHAIN98 DEFECT (SPECKLE)">
+                <td class="row-number">9</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37655</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF1_HPTP_IA_X_F1_SIGON_FG_RVEDC_CHAIN98</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640064MV D6052PY100173 U10.U1 37856 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F1_HPTP_AVX2_X_F1_SIGON_FG_RVEDC_CHAIN117 DEFECT (SPECKLE)">
+                <td class="row-number">10</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37856</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F1_HPTP_AVX2_X_F1_SIGON_FG_RVEDC_CHAIN117</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 37891 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F1_HPTP_AVX2_X_F1_SIGON_FG_RVEDC_CHAIN101 PASS">
+                <td class="row-number">11</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37891</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F1_HPTP_AVX2_X_F1_SIGON_FG_RVEDC_CHAIN101</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 37925 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F1_HPTP_AVX2_X_F1_SIGON_FG_RVEDC_CHAIN98 PASS">
+                <td class="row-number">12</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37925</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F1_HPTP_AVX2_X_F1_SIGON_FG_RVEDC_CHAIN98</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640064MV D6052PY100173 U10.U1 37998 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F1_HPTP_AVX3_X_F1_SIGON_FG_RVEDC_CHAIN117 DEFECT (SPECKLE)">
+                <td class="row-number">13</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">37998</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F1_HPTP_AVX3_X_F1_SIGON_FG_RVEDC_CHAIN117</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 38032 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F1_HPTP_AVX3_X_F1_SIGON_FG_RVEDC_CHAIN101 PASS">
+                <td class="row-number">14</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">38032</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F1_HPTP_AVX3_X_F1_SIGON_FG_RVEDC_CHAIN101</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 38066 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F1_HPTP_AVX3_X_F1_SIGON_FG_RVEDC_CHAIN98 PASS">
+                <td class="row-number">15</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">38066</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F1_HPTP_AVX3_X_F1_SIGON_FG_RVEDC_CHAIN98</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 42556 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF4_HPTP_IA_X_F4_SIGON_FG_RVEDC_CHAIN117 PASS">
+                <td class="row-number">16</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">42556</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF4_HPTP_IA_X_F4_SIGON_FG_RVEDC_CHAIN117</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640064MV D6052PY100173 U10.U1 42633 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF4_HPTP_IA_X_F4_SIGON_FG_RVEDC_CHAIN101 DEFECT (SPECKLE)">
+                <td class="row-number">17</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">42633</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF4_HPTP_IA_X_F4_SIGON_FG_RVEDC_CHAIN101</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640064MV D6052PY100173 U10.U1 42726 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF4_HPTP_IA_X_F4_SIGON_FG_RVEDC_CHAIN98 DEFECT (SPECKLE)">
+                <td class="row-number">18</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">42726</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF4_HPTP_IA_X_F4_SIGON_FG_RVEDC_CHAIN98</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 42922 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F4_HPTP_AVX2_X_F4_SIGON_FG_RVEDC_CHAIN117 PASS">
+                <td class="row-number">19</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">42922</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F4_HPTP_AVX2_X_F4_SIGON_FG_RVEDC_CHAIN117</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 43014 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F4_HPTP_AVX2_X_F4_SIGON_FG_RVEDC_CHAIN101 PASS">
+                <td class="row-number">20</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">43014</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F4_HPTP_AVX2_X_F4_SIGON_FG_RVEDC_CHAIN101</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 43132 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F4_HPTP_AVX2_X_F4_SIGON_FG_RVEDC_CHAIN98 PASS">
+                <td class="row-number">21</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">43132</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F4_HPTP_AVX2_X_F4_SIGON_FG_RVEDC_CHAIN98</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 43299 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F4_HPTP_AVX3_X_F4_SIGON_FG_RVEDC_CHAIN117 PASS">
+                <td class="row-number">22</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">43299</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F4_HPTP_AVX3_X_F4_SIGON_FG_RVEDC_CHAIN117</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 43362 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F4_HPTP_AVX3_X_F4_SIGON_FG_RVEDC_CHAIN101 PASS">
+                <td class="row-number">23</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">43362</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F4_HPTP_AVX3_X_F4_SIGON_FG_RVEDC_CHAIN101</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 43478 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F4_HPTP_AVX3_X_F4_SIGON_FG_RVEDC_CHAIN98 PASS">
+                <td class="row-number">24</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">43478</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F4_HPTP_AVX3_X_F4_SIGON_FG_RVEDC_CHAIN98</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 51034 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">25</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">51034</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 51773 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">26</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">51773</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 53560 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">27</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">53560</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 54658 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">28</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">54658</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 55559 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">29</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">55559</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 57298 MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">30</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">57298</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBIAF7_HPTP_IA_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="HTD_RESET_MCPSPLIT" data-operation="6248" data-visual-id="D6052PY100173" data-lot="J640064MV" data-classification="PASS" data-row-text="J640064MV D6052PY100173 U10.U1 57603 RESET_MCPSPLIT_SHMOO_K_LTTC_X_X_X_X_UNCORE_ROOM_STABILITY PASS">
+                <td class="row-number">31</td>
+                <td class="col-lot">J640064MV</td>
+                <td class="col-visual-id col-hidden">D6052PY100173</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">57603</td>
+                <td class="col-test-name test-name-col test-name-cell">RESET_MCPSPLIT_SHMOO_K_LTTC_X_X_X_X_UNCORE_ROOM_STABILITY</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 59001 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">32</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">59001</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 59749 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">33</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">59749</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 60769 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">34</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">60769</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 62344 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">35</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">62344</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 63427 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">36</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">63427</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 64925 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">37</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">64925</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX2F7_HPTP_AVX2_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 66482 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">38</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">66482</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 67187 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">39</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">67187</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 68292 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38 DEFECT (SPECKLE)">
+                <td class="row-number">40</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">68292</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA38</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 69595 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">41</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">69595</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN117_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 71121 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">42</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">71121</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN101_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="FUN_CORE_CBB" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="DEFECT (SPECKLE)" data-row-text="J640140MV D63X2G3600059 U10.U1 72678 MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40 DEFECT (SPECKLE)">
+                <td class="row-number">43</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">72678</td>
+                <td class="col-test-name test-name-col test-name-cell">MLCFGSBFT_CORE_VMIN_K_CHKCBBAVX3F7_HPTP_AVX3_X_F7_SIGON_FGMTT_7911_RVEDC_CHAIN98_IA40</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-defect">DEFECT (SPECKLE)</span></td>
+            </tr>
+<tr data-category="HTD_RESET_MCPSPLIT" data-operation="6248" data-visual-id="D63X2G3600059" data-lot="J640140MV" data-classification="PASS" data-row-text="J640140MV D63X2G3600059 U10.U1 83925 RESET_MCPSPLIT_SHMOO_K_LTTC_X_X_X_X_UNCORE_ROOM_STABILITY PASS">
+                <td class="row-number">44</td>
+                <td class="col-lot">J640140MV</td>
+                <td class="col-visual-id col-hidden">D63X2G3600059</td>
+                <td class="col-substructure col-hidden">U10.U1</td>
+                <td class="col-order-num col-hidden">83925</td>
+                <td class="col-test-name test-name-col test-name-cell">RESET_MCPSPLIT_SHMOO_K_LTTC_X_X_X_X_UNCORE_ROOM_STABILITY</td>
+                <td class="socket-col socket-col-CLASSHOT" data-socket="CLASSHOT" data-coltype="classification"><span class="classification-badge class-pass">PASS</span></td>
+            </tr>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Generated: 2026-10-05 10:55:04</p>
+        </div>
+    </div>
+
+    <script>
+        let updateTableTimeout;
+        function updateTable() {
+            clearTimeout(updateTableTimeout);
+            updateTableTimeout = setTimeout(_updateTableImpl, 250);
+        }
+
+        // ------------------------------------------------------------------
+        // Boolean search expression support: AND / OR / parentheses.
+        // ------------------------------------------------------------------
+        let _searchExprCache = { raw: null, fn: null };
+
+        function compileSearchExpression(raw) {
+            if (_searchExprCache.raw === raw && _searchExprCache.fn) {
+                return _searchExprCache.fn;
+            }
+
+            const tokens = _tokenizeSearchExpression(raw);
+            let pos = 0;
+
+            function peek() { return tokens[pos]; }
+            function next() { return tokens[pos++]; }
+
+            function parseExpr() {
+                let node = parseTerm();
+                while (peek() && peek().type === 'OR') {
+                    next();
+                    const right = parseTerm();
+                    node = { type: 'OR', left: node, right: right };
+                }
+                return node;
+            }
+
+            function parseTerm() {
+                let node = parseFactor();
+                while (peek() && peek().type === 'AND') {
+                    next();
+                    const right = parseFactor();
+                    node = { type: 'AND', left: node, right: right };
+                }
+                return node;
+            }
+
+            function parseFactor() {
+                const tok = peek();
+                if (!tok) {
+                    throw new Error('Invalid search expression: unexpected end of input');
+                }
+                if (tok.type === 'LPAREN') {
+                    next();
+                    const node = parseExpr();
+                    const closing = peek();
+                    if (!closing || closing.type !== 'RPAREN') {
+                        throw new Error('Invalid search expression: unmatched parenthesis');
+                    }
+                    next();
+                    return node;
+                }
+                if (tok.type === 'OPERAND') {
+                    next();
+                    return { type: 'OPERAND', value: tok.value };
+                }
+                throw new Error('Invalid search expression near "' + (tok.value || '') + '"');
+            }
+
+            if (tokens.length === 0) {
+                _searchExprCache = { raw: raw, fn: null };
+                return null;
+            }
+
+            const ast = parseExpr();
+            if (pos < tokens.length) {
+                throw new Error('Invalid search expression: unmatched parenthesis or trailing text');
+            }
+
+            function evaluate(node, rowTextUpper) {
+                switch (node.type) {
+                    case 'AND': return evaluate(node.left, rowTextUpper) && evaluate(node.right, rowTextUpper);
+                    case 'OR': return evaluate(node.left, rowTextUpper) || evaluate(node.right, rowTextUpper);
+                    case 'OPERAND': return rowTextUpper.indexOf(node.value) !== -1;
+                    default: return false;
+                }
+            }
+
+            const fn = function(rowTextUpper) { return evaluate(ast, rowTextUpper); };
+            _searchExprCache = { raw: raw, fn: fn };
+            return fn;
+        }
+
+        function _tokenizeSearchExpression(raw) {
+            const tokens = [];
+            let i = 0;
+            const n = raw.length;
+            while (i < n) {
+                const ch = raw[i];
+                if (ch === ' ' || ch === '\t') { i++; continue; }
+                if (ch === '(') { tokens.push({ type: 'LPAREN', value: '(' }); i++; continue; }
+                if (ch === ')') { tokens.push({ type: 'RPAREN', value: ')' }); i++; continue; }
+                let j = i;
+                while (j < n && raw[j] !== ' ' && raw[j] !== '\t' && raw[j] !== '(' && raw[j] !== ')') {
+                    j++;
+                }
+                const word = raw.substring(i, j);
+                const upperWord = word.toUpperCase();
+                if (upperWord === 'AND') {
+                    tokens.push({ type: 'AND', value: 'AND' });
+                } else if (upperWord === 'OR') {
+                    tokens.push({ type: 'OR', value: 'OR' });
+                } else if (word.length > 0) {
+                    tokens.push({ type: 'OPERAND', value: upperWord });
+                }
+                i = j;
+            }
+            return tokens;
+        }
+
+        function _checkedValues(dropdownId) {
+            const boxes = document.querySelectorAll('#' + dropdownId + ' input[type="checkbox"]');
+            const out = [];
+            for (let i = 0; i < boxes.length; i++) {
+                if (boxes[i].checked) out.push(boxes[i].value);
+            }
+            return { values: out, total: boxes.length };
+        }
+
+        function _updateTableImpl() {
+            const table = document.querySelector('.data-table tbody');
+            const tr = table.getElementsByTagName('tr');
+
+            const cat = _checkedValues('modulesDropdown');
+            const selectedCategories = new Set(cat.values);
+
+            const selectedLots = new Set(_checkedValues('lotDropdown').values);
+            const selectedOperations = new Set(_checkedValues('operationDropdown').values);
+            const selectedVisualIds = new Set(_checkedValues('visualIdDropdown').values);
+
+            const clsInfo = _checkedValues('classificationDropdown');
+            const selectedClassifications = new Set(clsInfo.values);
+            const classificationTotal = clsInfo.total;
+
+            const searchExprRaw = document.getElementById('searchInput').value;
+            const searchErrorEl = document.getElementById('searchErrorIndicator');
+            let searchEvaluator = null;
+            let searchError = null;
+            if (searchExprRaw && searchExprRaw.trim() !== '') {
+                try {
+                    searchEvaluator = compileSearchExpression(searchExprRaw);
+                    searchErrorEl.textContent = '';
+                } catch (e) {
+                    searchError = e.message || 'Invalid search expression';
+                    searchErrorEl.textContent = searchError;
+                }
+            } else {
+                searchErrorEl.textContent = '';
+            }
+
+            const sockets = ['CLASSHOT'];
+            const socketHasData = {};
+            sockets.forEach(s => { socketHasData[s] = false; });
+
+            let totalRows = tr.length;
+            let visibleRows = 0;
+            const rowShouldShow = new Array(tr.length);
+
+            for (let i = 0; i < tr.length; i++) {
+                const rowEl = tr[i];
+                const category = rowEl.getAttribute('data-category');
+                const lot = rowEl.getAttribute('data-lot');
+                const operation = rowEl.getAttribute('data-operation');
+                const visualId = rowEl.getAttribute('data-visual-id');
+                const rowClassification = rowEl.getAttribute('data-classification') || 'N/A';
+                const rowTextCached = rowEl.getAttribute('data-row-text') || '';
+
+                const categoryMatch = selectedCategories.size === 0 || selectedCategories.has(category);
+                const lotMatch = selectedLots.size === 0 || selectedLots.has(lot);
+                const operationMatch = selectedOperations.size === 0 || selectedOperations.has(operation);
+                const visualIdMatch = selectedVisualIds.size === 0 || selectedVisualIds.has(visualId);
+
+                let classificationMatch = true;
+                if (classificationTotal > 0 && selectedClassifications.size > 0) {
+                    const rowClasses = rowClassification.split('|');
+                    classificationMatch = rowClasses.some(rc => selectedClassifications.has(rc));
+                }
+
+                let searchMatch = true;
+                if (searchError) {
+                    searchMatch = false;
+                } else if (searchEvaluator) {
+                    searchMatch = searchEvaluator(rowTextCached);
+                }
+
+                const shouldShow = categoryMatch && lotMatch && operationMatch && visualIdMatch && classificationMatch && searchMatch;
+                rowShouldShow[i] = shouldShow;
+                if (shouldShow) visibleRows++;
+
+                if (shouldShow) {
+                    const classCells = rowEl.querySelectorAll('td[data-coltype="classification"]');
+                    for (let c = 0; c < classCells.length; c++) {
+                        const cell = classCells[c];
+                        const text = (cell.textContent || '').trim();
+                        if (text && text !== 'NO DATA') {
+                            const socket = cell.getAttribute('data-socket');
+                            if (socket) socketHasData[socket] = true;
+                        }
+                    }
+                }
+            }
+
+            for (let i = 0; i < tr.length; i++) {
+                if (rowShouldShow[i]) {
+                    tr[i].classList.remove('row-hidden');
+                } else {
+                    tr[i].classList.add('row-hidden');
+                }
+            }
+
+            const selectedSockets = new Set(_checkedValues('socketDropdown').values);
+            sockets.forEach(s => {
+                const headerCol = document.querySelector(`th[data-socket="${s}"]`);
+                const bodyCols = document.querySelectorAll(`td[data-socket="${s}"]`);
+                const showSocket = (selectedSockets.size === 0 || selectedSockets.has(s)) && socketHasData[s];
+                const display = showSocket ? '' : 'none';
+                if (headerCol) headerCol.style.display = display;
+                bodyCols.forEach(col => { col.style.display = display; });
+            });
+
+            const rowIndicatorEl = document.getElementById('rowCountIndicator');
+            if (rowIndicatorEl) {
+                rowIndicatorEl.textContent = visibleRows + ' of ' + totalRows + ' rows';
+            }
+        }
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.classList.toggle('show');
+            const allDropdowns = document.querySelectorAll('.dropdown-content');
+            allDropdowns.forEach(dd => {
+                if (dd.id !== dropdownId) dd.classList.remove('show');
+            });
+        }
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-button') && !event.target.closest('.dropdown-content')) {
+                const dropdowns = document.querySelectorAll('.dropdown-content');
+                dropdowns.forEach(dropdown => dropdown.classList.remove('show'));
+            }
+        }
+        function toggleColumnVisibility(cb) {
+            const colClass = cb.value;
+            const hide = !cb.checked;
+            document.querySelectorAll('.data-table .' + colClass).forEach(el => {
+                el.classList.toggle('col-hidden', hide);
+            });
+        }
+        function selectAllDropdown(dropdownId) {
+            const checkboxes = document.querySelectorAll('#' + dropdownId + ' input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = true);
+            updateTable();
+        }
+        function unselectAllDropdown(dropdownId) {
+            const checkboxes = document.querySelectorAll('#' + dropdownId + ' input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateTable();
+        }
+        window.onload = function() {
+            const allCheckboxes = document.querySelectorAll('.dropdown-content:not(#columnsDropdown) input[type="checkbox"]');
+            for (let i = 0; i < allCheckboxes.length; i++) { allCheckboxes[i].checked = true; }
+            _updateTableImpl();
+        };
+    </script>
+</body>
+</html>
